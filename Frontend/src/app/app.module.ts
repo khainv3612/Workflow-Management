@@ -1,61 +1,64 @@
-import { NgModule, APP_INITIALIZER } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
-import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
-import { ClipboardModule } from 'ngx-clipboard';
-import { TranslateModule } from '@ngx-translate/core';
-import { InlineSVGModule } from 'ng-inline-svg';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { AuthService } from './modules/auth/_services/auth.service';
-import { environment } from 'src/environments/environment';
-// Highlight JS
-import { HighlightModule, HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
-import { SplashScreenModule } from './_metronic/partials/layout/splash-screen/splash-screen.module';
-// #fake-start#
-import { FakeAPIService } from './_fake/fake-api.service';
-// #fake-end#
+import {NgModule} from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
 
-function appInitializer(authService: AuthService) {
-  return () => {
-    return new Promise((resolve) => {
-      authService.getUserByToken().subscribe().add(resolve);
-    });
-  };
-}
+import {AppRoutingModule} from './app-routing.module';
+import {AppComponent} from './app.component';
+import {HomeComponent} from './component/home/home.component';
+import {LoginComponent} from './component/auth/login/login.component';
+import {RegisterComponent} from './component/auth/register/register.component';
+import {ErrorPageComponent} from './component/auth/error-page/error-page.component';
+import {AuthGuardService} from "./service/auth-guard.service";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
+import {AuthInterceptor} from "./interceptor/auth.interceptor";
+import {JWT_OPTIONS, JwtHelperService} from '@auth0/angular-jwt';
+import {NgxLoadingModule} from 'ngx-loading';
+import {ReactiveFormsModule} from "@angular/forms";
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AsideComponent } from './component/home/components/aside/aside.component';
+import { HighlightModule, HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
+import {InlineSVGModule} from "ng-inline-svg";
+import {SplashScreenModule} from "./partials/layout/splash-screen/splash-screen.module";
+import {ExtrasModule} from "./partials/layout/extras/extras.module";
+import {LayoutModule} from "./component/home/components/layout.module";
+import {SubheaderModule} from "./partials/layout/subheader/subheader.module";
+import { TranslateModule } from '@ngx-translate/core';
 
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [
+    AppComponent,
+    HomeComponent,
+    LoginComponent,
+    RegisterComponent,
+    ErrorPageComponent,
+    AsideComponent,
+  ],
   imports: [
     BrowserModule,
-    BrowserAnimationsModule,
-    SplashScreenModule,
-    TranslateModule.forRoot(),
-    HttpClientModule,
-    HighlightModule,
-    ClipboardModule,
-    // #fake-start#
-    environment.isMockEnabled
-      ? HttpClientInMemoryWebApiModule.forRoot(FakeAPIService, {
-        passThruUnknownUrl: true,
-        dataEncapsulation: false,
-      })
-      : [],
-    // #fake-end#
     AppRoutingModule,
+    NgxLoadingModule.forRoot({}),
+    ReactiveFormsModule,
+    HttpClientModule,
+    BrowserAnimationsModule,
     InlineSVGModule.forRoot(),
-    NgbModule,
+    SplashScreenModule,
+    ExtrasModule,
+    LayoutModule,
+    SubheaderModule,
+    TranslateModule.forRoot(),
+
   ],
-  providers: [
+  providers: [AuthGuardService,
+    {provide: JWT_OPTIONS, useValue: JWT_OPTIONS},
     {
-      provide: APP_INITIALIZER,
-      useFactory: appInitializer,
-      multi: true,
-      deps: [AuthService],
+      provide: HTTP_INTERCEPTORS,
+
+      useClass: AuthInterceptor,
+
+      multi: true
+
     },
+    JwtHelperService,
     {
       provide: HIGHLIGHT_OPTIONS,
       useValue: {
@@ -67,8 +70,8 @@ function appInitializer(authService: AuthService) {
           json: () => import('highlight.js/lib/languages/json')
         },
       },
-    },
-  ],
-  bootstrap: [AppComponent],
+    },],
+  bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

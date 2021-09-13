@@ -56,6 +56,7 @@ public class AuthController {
     @Autowired
     IPasswordSaltService passwordSaltService;
 
+    @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequestDto loginRequest) {
         Optional<Account> accountOpt = accountRepository.findByUsername(loginRequest.getUsername());
         if (!accountOpt.isPresent()) {

@@ -1,2 +1,16 @@
-<app-splash-screen></app-splash-screen>
-<router-outlet></router-outlet>
+<div [class]="themeService.presentTheme$ | async">
+  <ng-template #customLoadingTemplate>
+    <div class="custom-class">
+      <h3>
+        Loading...
+      </h3>
+    </div>
+  </ng-template>
+  <ngx-loading [show]="themeService.checkLoading()" [config]="{ backdropBorderRadius: '3px' }"
+               [template]="customLoadingTemplate"></ngx-loading>
+
+
+<!--  <app-splash-screen></app-splash-screen>-->
+    <router-outlet></router-outlet>
+
+</div>

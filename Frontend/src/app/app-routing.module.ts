@@ -1,29 +1,23 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { AuthGuard } from './modules/auth/_services/auth.guard';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {LoginComponent} from "./component/auth/login/login.component";
+import {RegisterComponent} from "./component/auth/register/register.component";
+import {HomeComponent} from "./component/home/home.component";
+import {AuthGuardService} from "./service/auth-guard.service";
 
-export const routes: Routes = [
-  {
-    path: 'auth',
+const routes: Routes = [
+  {path: '', component: HomeComponent, canActivate: [AuthGuardService]},
+  {path: 'home', component: HomeComponent, canActivate: [AuthGuardService],
     loadChildren: () =>
-      import('./modules/auth/auth.module').then((m) => m.AuthModule),
+      import('../app/component/home/components/layout.module').then((m) => m.LayoutModule)
   },
-  {
-    path: 'error',
-    loadChildren: () =>
-      import('./modules/errors/errors.module').then((m) => m.ErrorsModule),
-  },
-  {
-    path: '',
-    canActivate: [AuthGuard],
-    loadChildren: () =>
-      import('./pages/layout.module').then((m) => m.LayoutModule),
-  },
-  { path: '**', redirectTo: 'error/404' },
+  {path: 'login', component: LoginComponent},
+  {path: 'register', component: RegisterComponent},
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule],
+  exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+}
