@@ -20,7 +20,7 @@ export class AuthGuardService implements CanActivate {
     const currentUser = JSON.parse(<string>window.sessionStorage.getItem(environment.USER_KEY));
     if (route.data.roles && !currentUser.roles.includes(route.data.roles[0])) {
       // role not authorised so redirect to home page
-      this.router.navigate(['/error_page', {title: Constant.NOT_PERMISION}]);
+      this.router.navigate(['/error/403']);
       return false;
     }
     return true;

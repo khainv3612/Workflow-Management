@@ -1,0 +1,12 @@
+app-home {
+  opacity: 0;
+  height: 100%;
+}
+app-home .grid-root {
+  height: 100%;
+}
+
+.page-loaded app-home {
+  opacity: 1;
+  transition: opacity 1s ease-in-out;
+}

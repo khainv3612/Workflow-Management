@@ -18,7 +18,7 @@ import { Router, NavigationEnd, NavigationError } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { TableExtendedService } from './shared/crud-table';
 @Component({
-  selector: 'app-root',
+  selector: 'body[root]',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
